@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Activity, Users, Package, CreditCard, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { HistoryChart } from "@/components/history-chart"
 
 export default function Dashboard() {
   return (
@@ -68,6 +69,10 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mb-8">
+        <HistoryChart />
       </div>
 
       {/* Recent activity */}

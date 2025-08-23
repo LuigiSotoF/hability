@@ -18,7 +18,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden pt-5 pl-2">
         <Button
           variant="outline"
           size="sm"

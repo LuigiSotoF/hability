@@ -2,8 +2,12 @@ import React from 'react'
 
 export default function UsersPage() {
   return (
-    <div>
-      <h1>Users</h1>
+    <div className='flex flex-col gap-4 items-center justify-center'>
+      <h1 className='text-2xl font-bold'>Usuarios</h1>
+      <div className='flex flex-col gap-2'>
+        <h2 className='text-lg font-bold'>Usuarios</h2>
+        <p className='text-sm text-gray-500'>Usuarios</p>
+      </div>
     </div>
   )
 }
