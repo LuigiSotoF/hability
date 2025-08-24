@@ -28,7 +28,7 @@ export default function Sidebar({ isOpen = true, onToggle }: SidebarProps) {
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "register", label: "Registro", icon: TextSearch, href: "/dashboard/register" },
     { id: "account_settings", label: "Configuración", icon: Settings, href: "/dashboard/account-settings" },
-    { id: "api_and_integrations", label: "API & Integraciones", icon: KeyRound, href: "/dashboard/api-and-integrations" },
+    { id: "api_and_integrations", label: "API & Integraciones", icon: KeyRound, href: "/dashboard/api-and-integrations", disabled: true },
   ]
 
   const menuProducts = [
@@ -66,31 +66,23 @@ export default function Sidebar({ isOpen = true, onToggle }: SidebarProps) {
         </div>
 
         <div className="border-b border-[#F0F0F0] mx-4 rounded-md" />
-
-        {/* <div className="p-4">
-          <div className="flex items-center space-x-3">
-            <Avatar className="w-10 h-10">
-              <AvatarImage src="/api/placeholder/40/40" />
-              <AvatarFallback className="bg-[#1482F8] text-white">
-                <User className="w-5 h-5" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                Admin
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                admin@hability.com
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="border-b border-[#F0F0F0] mx-4 rounded-md" /> */}
-
         <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
+            const isDisabled = item.disabled
+
+            if (isDisabled) {
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-400 cursor-not-allowed opacity-50"
+                >
+                  <Icon className="w-5 h-5 mr-3 text-gray-300" />
+                  {item.label}
+                </div>
+              )
+            }
 
             return (
               <Link
