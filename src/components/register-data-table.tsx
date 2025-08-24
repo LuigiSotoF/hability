@@ -110,9 +110,21 @@ export const columns: ColumnDef<HouseTableData>[] = [
   {
     accessorKey: "general_score",
     header: "General Score",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("general_score")}</div>
-    ),
+    cell: ({ row }) => {
+      const score = row.getValue("general_score") as number
+      const percentage = (score / 10) * 100 // Asumiendo que el score máximo es 10
+
+      return (
+        <div className="flex items-center gap-2">
+          <div className="w-30 bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-[#1482F8] h-2 rounded-full transition-all duration-300"
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </div>
+      )
+    },
   },
 
 ]

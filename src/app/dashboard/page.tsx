@@ -43,14 +43,12 @@ export default function Dashboard() {
     }
   }
 
-  // Cargar datos iniciales
   useEffect(() => {
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     filterChatsByDateRange(startOfMonth, now)
   }, [])
 
-  // Calcular estadísticas basadas en los chats filtrados
   const totalChats = filteredChats.length
   const activeChats = filteredChats.filter(chat =>
     chat.status === "CALCULING_PRICE" || chat.status === "OFFERT"
@@ -64,12 +62,12 @@ export default function Dashboard() {
       <div className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-semibold text-gray-900">Dashboard</h1>
         <div>
-          <DateFilterSelector onFilterChange={handleFilterChange} />
+          <DateFilterSelector onFilterChange={handleFilterChange} defaultValue={currentFilter} />
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Card>
+        <Card className="shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Verificaciones Totales</CardTitle>
           </CardHeader>
@@ -83,10 +81,9 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Chats</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-semibold">
@@ -99,10 +96,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Chats Completados</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-semibold">
@@ -115,10 +111,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tasa de Conversión</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-semibold">

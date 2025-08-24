@@ -66,17 +66,17 @@ const FILTER_OPTIONS = [
   }
 ]
 
-export function DateFilterSelector({ onFilterChange, defaultValue = "thismonth" }: DateFilterSelectorProps) {
-  const [selectedFilter, setSelectedFilter] = useState<DateFilter>(defaultValue)
+export function DateFilterSelector({ onFilterChange, defaultValue }: DateFilterSelectorProps) {
+  const [selectedFilter, setSelectedFilter] = useState<DateFilter>(defaultValue || "thismonth")
 
   const calculateDateRange = (filter: DateFilter): { startDate: Date | null; endDate: Date | null } => {
     const now = new Date()
     const filterOption = FILTER_OPTIONS.find(option => option.value === filter)
-    
+
     if (filterOption) {
       return filterOption.calculateDate(now)
     }
-    
+
     // Fallback al filtro por defecto
     const defaultOption = FILTER_OPTIONS.find(option => option.value === "thismonth")!
     return defaultOption.calculateDate(now)
