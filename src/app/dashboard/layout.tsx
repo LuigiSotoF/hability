@@ -29,8 +29,8 @@ export default function DashboardLayout({
         </Button>
       </div>
       <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
-      <div className="flex flex-col h-full w-full">
-        <main className="p-4 lg:p-8">
+      <div className="flex flex-col h-full flex-1">
+        <main className="p-4 lg:p-8 overflow-auto">
           {children}
         </main>
       </div>

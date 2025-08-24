@@ -25,10 +25,10 @@ export const HistoryChart = () => {
           tooltip: {
             trigger: 'axis'
           },
-          legend: {
-            data: ['Actividad 2023', 'Actividad 2024'],
-            top: 30
-          },
+          // legend: {
+          //   data: ['Actividad 2023', 'Actividad 2024'],
+          //   top: 30
+          // },
           grid: {
             left: '3%',
             right: '4%',
@@ -53,6 +53,9 @@ export const HistoryChart = () => {
               data: [
                 2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
               ],
+              itemStyle: {
+                color: '#1482F8'
+              },
               markPoint: {
                 data: [
                   { type: 'max', name: 'Máximo' },
@@ -69,6 +72,9 @@ export const HistoryChart = () => {
               data: [
                 2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
               ],
+              itemStyle: {
+                color: '#DFE1E7' // Verde
+              },
               markPoint: {
                 data: [
                   { name: 'Máximo', value: 182.2, xAxis: 7, yAxis: 183 },
@@ -114,8 +120,8 @@ export const HistoryChart = () => {
       <CardContent>
         <div
           ref={chartRef}
-          className="w-full h-[400px]"
-          style={{ minHeight: '400px' }}
+          className="w-full h-[450px]"
+          style={{ minHeight: '450px' }}
         />
       </CardContent>
     </Card>
