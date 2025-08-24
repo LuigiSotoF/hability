@@ -11,7 +11,7 @@ export const addDeepResearchResultAction = async (input: {
     const iaProvider = getIAProvider();
 
     const responsesResult = await iaProvider.responses.create({
-        model: "gpt-5",
+        model: "gpt-5-mini",
         conversation: input.conversationId,
         store: true,
         instructions: MAIN_ASSISTANT_PROMPT,
@@ -27,7 +27,7 @@ export const addDeepResearchResultAction = async (input: {
                         ${input.content}
 
                          IMPORTANTE: Si detectas en esta etapa que ya todos los pasos fueron ejecutados, inclusive los pasos de la 
-                        investigacion entonces procede directamente con la oferta (OFFERT) , responde en tu mensaje con esta sin pausas
+                        investigacion entonces procede a provocar al usuario para que diga que desea continuar y fomente el flujo normal
                     `,
                 }]
             }
@@ -36,17 +36,21 @@ export const addDeepResearchResultAction = async (input: {
 
     const data = JSON.parse(responsesResult.output_text);
 
+    console.log("DeepResearchFinalData =>", data);
+
+
     await provider.from('house').update({
-        security_score: data.data.securityScore ?? '',
+        humidity_score: parseInt(data.data.humidityScore) ?? 0,
+        security_score: parseInt(data.data.securityScore) ?? 0,
         security_justification: data.data.securityJustification ?? '',
 
-        investment_score: data.data.investmentScore ?? '',
+        investment_score: parseInt(data.data.investmentScore) ?? 0,
         investment_score_justification: data.data.investmentScoreJustification ?? '',
 
-        around_price_estimated: data.data.aroundPriceEstimated ?? '',
+        around_price_estimated: parseInt(data.data.aroundPriceEstimated) ?? 0,
         around_price_estimated_justification: data.data.aroundPriceEstimatedJustification ?? '',
 
-        mts_estimated: data.data.mtsEstimated ?? '',
+        mts_estimated: parseInt(data.data.mtsEstimated) ?? 0,
         mts_estimated_justification: data.data.mtsEstimatedJustification ?? ''
     }).eq('id', input.houseId).single();
 

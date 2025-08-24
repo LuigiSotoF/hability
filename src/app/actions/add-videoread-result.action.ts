@@ -34,7 +34,7 @@ export const addVideoReadResultAction = async (input: {
                     return {
                         type: 'input_image',
                         file_id: element,
-                        detail: 'auto',
+                        detail: 'low',
                     }
                 })
             },
@@ -58,6 +58,26 @@ export const addVideoReadResultAction = async (input: {
     const chat = await provider.from('chats').select('*').eq('house_id', input.houseId).single();
     const user = await provider.from('users').select('*').eq('id', chat.data.user_id).single();
     const data = JSON.parse(responsesResult.output_text);
+
+    console.log("add-video-parts =>", data);
+
+
+    const houseDetails = data.data.houseDetails;
+
+    const houseUpdateresult = await provider.from('house').update({
+        "ceiling_score": parseInt(houseDetails.ceilingScore) ?? 0,
+        "floor_score": parseInt(houseDetails.floorScore) ?? 0,
+        "finishes_score": parseInt(houseDetails.finishedScore),
+        "bethrooms": Array.from(houseDetails.bethrooms).length,
+        "other_spaces": houseDetails.otherSpaces,
+        "facade_score": parseInt(houseDetails.facadeScore),
+        "plugs_score": parseInt(houseDetails.plugsScore),
+        "special_structures": houseDetails.specialStructures,
+        "mts": parseInt(houseDetails.estimatedAreaM2) ?? 0,
+    }).eq('id', chat.data.house_id)
+        .single();
+
+    console.log('houseUpdateresult =>', houseUpdateresult.error);
 
     sendMessageAction({
         to: user.data.phone,

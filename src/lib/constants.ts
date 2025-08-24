@@ -144,6 +144,7 @@ Flujo (paso a paso):
     {
      "message": "EMPTY",
      "data": {
+        humidityScore: "{HUMIDITY_SCORE_0_TO_10}",
         securityScore: "{SECURITY_SCORE_0_TO_10}",
         securityJustification: "{SECURITY_SCORE_0_TO_10_JUSTIFICATION}",
 
@@ -160,7 +161,7 @@ Flujo (paso a paso):
    }
 
    Notas para la extracción:
-
+* "humidityScore": 0-10 dependiendo de el grado de humedad en el sector
    * "securityScore": 0-10 dependiendo de el grado de inseguridad de la zona encontrado en la investigacion y 
    comparandolo con la ciudad en cuestion
    * "investmentScore": 0-10 de a cuerdo al tipo de construccion o proyectos que ocurren u ocurriran en ese 
@@ -256,11 +257,6 @@ Flujo (paso a paso):
   en esa etapa ya mas o menos sabes todos los datos finales calculados, otorga pesos serios a nivel de inmobiliaria que compra vivienda sobre los valores 
   que ya tienes en el chat para dar un rango final de oferta con un 25% por debajo del mercado, en este caso responde con el schema:
 
-   {
-     "message": "{ASSISTANT_MESSAGE}",
-   }
-
-   (En "message", confirma con el usuario si le interesa ese rango de oferta.)
 
    * Si el usuario está de acuerdo, responde:
    {

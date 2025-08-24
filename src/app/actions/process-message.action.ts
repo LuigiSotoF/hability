@@ -134,25 +134,31 @@ export const processMessageAction = async (input: MessageProviderWebhookPayload)
         } else if (newStep === 'HOUSE_VERIFICATION_VALUES') {
             const houseDetails = data.houseDetails;
 
-            await provider.from('house').update({
-                "ceiling_score": houseDetails.ceilingScore ?? 0,
-                "floor_score": houseDetails.floorScore ?? 0,
-                "finishes_score": houseDetails.finishedScore,
+            const houseUpdateresult = await provider.from('house').update({
+                "ceiling_score": parseInt(houseDetails.ceilingScore) ?? 0,
+                "floor_score": parseInt(houseDetails.floorScore) ?? 0,
+                "finishes_score": parseInt(houseDetails.finishedScore),
                 "bethrooms": Array.from(houseDetails.bethrooms).length,
                 "other_spaces": houseDetails.otherSpaces,
-                "facade_score": houseDetails.facadeScore,
-                "plugs_score": houseDetails.plugsScore,
+                "facade_score": parseInt(houseDetails.facadeScore),
+                "plugs_score": parseInt(houseDetails.plugsScore),
                 "special_structures": houseDetails.specialStructures,
-                "mts": houseDetails.estimatedAreaM2,
+                "mts": parseInt(houseDetails.estimatedAreaM2) ?? 0,
             }).eq('id', prevChat.house_id)
                 .single();
+
+            console.log('houseUpdateresult =>', houseUpdateresult.error);
+
         }
     } else if (newStep === 'FINAL' && data.startRange) {
-        await provider.from('offert').insert({
+        const offertResponse = await provider.from('offert').insert({
             "start_price": parseInt(data.startRange),
             "end_range": parseInt(data.endRange),
             "chat_id": prevChat.id,
         });
+
+        console.log("final step error? =>", offertResponse.error);
+
     }
 
     console.log({
