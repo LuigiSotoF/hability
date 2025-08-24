@@ -1,22 +1,22 @@
-interface TextMessage {
+export interface TextMessage {
     conversation: string;
 }
 
-interface ImageMessage {
+export interface ImageMessage {
     imageMessage: {
         url: string;
     },
     base64: string;
 }
 
-interface DocumentMessage {
+export interface DocumentMessage {
     documentMessage: {
         url: string;
     },
     base64: string;
 }
 
-interface AudioMessage {
+export interface AudioMessage {
     audioMessage: {
         url: string;
     },
@@ -26,7 +26,9 @@ interface AudioMessage {
 export interface MessageProviderWebhookPayload {
     event: "messages.upsert" | string;
     data: {
-        sender: string;
+        key: {
+            remoteJid: string;
+        }
         message: TextMessage | ImageMessage | DocumentMessage | AudioMessage;
     }
-  }
+}
