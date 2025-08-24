@@ -1,150 +1,140 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Activity, Users, Package, CreditCard, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { HistoryChart } from "@/components/history-chart"
+import ActiveChatsCounter from "@/components/active-chats-counter"
+import { DateFilterSelector, DateFilter } from "@/components/date-filter-selector"
+import { useState, useEffect } from "react"
+import { useChatsService } from "@/lib/services/chats.service"
+import { Chat } from "@/lib/types/chat.types"
 
 export default function Dashboard() {
+  const [filteredChats, setFilteredChats] = useState<Chat[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [currentFilter, setCurrentFilter] = useState<DateFilter>("thismonth")
+  const { getChats } = useChatsService()
+
+  const handleFilterChange = (filter: DateFilter, startDate: Date | null, endDate: Date | null) => {
+    setCurrentFilter(filter)
+    if (startDate && endDate) {
+      filterChatsByDateRange(startDate, endDate)
+    }
+  }
+
+  const filterChatsByDateRange = async (startDate: Date, endDate: Date) => {
+    try {
+      setLoading(true)
+      const result = await getChats({ page: 1, limit: 1000 })
+
+      if (result.isOk && result.data) {
+        const filtered = result.data.filter(chat => {
+          const chatDate = new Date(chat.created_at)
+          return chatDate >= startDate && chatDate <= endDate
+        })
+        setFilteredChats(filtered)
+      }
+    } catch (error) {
+      console.error("Error filtering chats:", error)
+      setFilteredChats([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Cargar datos iniciales
+  useEffect(() => {
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    filterChatsByDateRange(startOfMonth, now)
+  }, [])
+
+  // Calcular estadísticas basadas en los chats filtrados
+  const totalChats = filteredChats.length
+  const activeChats = filteredChats.filter(chat =>
+    chat.status === "CALCULING_PRICE" || chat.status === "OFFERT"
+  ).length
+  const completedChats = filteredChats.filter(chat =>
+    chat.status === "OFFERT"
+  ).length
+
   return (
     <div className="space-y-6">
-      {/* Welcome section */}
-      <div className="mb-8">
+      <div className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Bienvenido de vuelta. Aquí tienes un resumen de tu actividad.</p>
+        <div>
+          <DateFilterSelector onFilterChange={handleFilterChange} />
+        </div>
       </div>
 
-      {/* Stats cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ingresos Totales</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Verificaciones Totales</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : activeChats}
+            </div>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="w-3 h-3 mr-1 text-green-600" />
-              +20.1% desde el mes pasado
+              {loading ? "..." : `${((activeChats / totalChats) * 100).toFixed(1)}% del total`}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Suscripciones</CardTitle>
+            <CardTitle className="text-sm font-medium">Total de Chats</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2,350</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : totalChats}
+            </div>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="w-3 h-3 mr-1 text-green-600" />
-              +180.1% desde el mes pasado
+              En el período seleccionado
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ventas</CardTitle>
+            <CardTitle className="text-sm font-medium">Chats Completados</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : completedChats}
+            </div>
             <p className="text-xs text-muted-foreground flex items-center">
-              <ArrowDownRight className="w-3 h-3 mr-1 text-red-600" />
-              +19% desde el mes pasado
+              <ArrowUpRight className="w-3 h-3 mr-1 text-green-600" />
+              {loading ? "..." : `${((completedChats / totalChats) * 100).toFixed(1)}% del total`}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Actividad</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasa de Conversión</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+573</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : totalChats > 0 ? `${((completedChats / totalChats) * 100).toFixed(1)}%` : "0%"}
+            </div>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="w-3 h-3 mr-1 text-green-600" />
-              +201 desde el mes pasado
+              Completados vs Total
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent activity */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Actividad Reciente</CardTitle>
-            <CardDescription>
-              Las últimas actividades de tu aplicación
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { user: "María García", action: "compró un plan premium", time: "2 minutos atrás" },
-                { user: "Carlos López", action: "se registró en la plataforma", time: "5 minutos atrás" },
-                { user: "Ana Martínez", action: "actualizó su perfil", time: "10 minutos atrás" },
-                { user: "Luis Rodríguez", action: "canceló su suscripción", time: "15 minutos atrás" },
-              ].map((activity, index) => (
-                <div key={index} className="flex items-center space-x-4">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{activity.user.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {activity.user}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.action}
-                    </p>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {activity.time}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Usuarios Activos</CardTitle>
-            <CardDescription>
-              Usuarios conectados en tiempo real
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: "María García", status: "online", lastSeen: "Ahora" },
-                { name: "Carlos López", status: "online", lastSeen: "Ahora" },
-                { name: "Ana Martínez", status: "away", lastSeen: "5 min" },
-                { name: "Luis Rodríguez", status: "offline", lastSeen: "1 hora" },
-              ].map((user, index) => (
-                <div key={index} className="flex items-center space-x-4">
-                  <div className="relative">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <div className={`absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${user.status === 'online' ? 'bg-green-500' :
-                      user.status === 'away' ? 'bg-yellow-500' : 'bg-gray-400'
-                      }`} />
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {user.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {user.lastSeen}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="mb-8">
+        <HistoryChart />
       </div>
     </div>
   )
