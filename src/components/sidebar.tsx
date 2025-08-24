@@ -33,9 +33,9 @@ export default function Sidebar({ isOpen = true, onToggle }: SidebarProps) {
 
   const menuProducts = [
     { id: "infra_check", label: "Infra Check", icon: IdCard, href: "/dashboard/infra-check", color: "bg-[#1482F8]" },
-    { id: "legal_check", label: "Legal Check", icon: IdCard, href: "/dashboard/legal-check", color: "bg-[#F86B14]" },
-    { id: "debt_check", label: "Debt Check", icon: IdCard, href: "/dashboard/debt-check", color: "bg-[#F81418]" },
-    { id: "market_check", label: "Market Check", icon: IdCard, href: "/dashboard/market-check", color: "bg-[#F81418]" },
+    { id: "legal_check", label: "Legal Check", icon: IdCard, href: "/dashboard/legal-check", color: "bg-[#F86B14]", disabled: true },
+    { id: "debt_check", label: "Debt Check", icon: IdCard, href: "/dashboard/debt-check", color: "bg-[#F81418]", disabled: true },
+    { id: "market_check", label: "Market Check", icon: IdCard, href: "/dashboard/market-check", color: "bg-[#F81418]", disabled: true },
   ]
 
   return (
@@ -110,6 +110,19 @@ export default function Sidebar({ isOpen = true, onToggle }: SidebarProps) {
           {menuProducts.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
+            const isDisabled = item.disabled
+
+            if (isDisabled) {
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-400 cursor-not-allowed opacity-50"
+                >
+                  <Icon className={`w-7 h-7 mr-3 p-1 rounded ${item.color} text-white opacity-50`} />
+                  {item.label}
+                </div>
+              )
+            }
 
             return (
               <Link key={item.id} href={item.href} className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${isActive ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}>
