@@ -12,7 +12,7 @@ export const useVideosService = () => {
             videoUrl: input.videoUrl,
             callbackUrl: process.env.APP_URL + '/api/webhook/video-upload-result' + '?chatId=' + input.chatId + '&houseId=' + input.houoseId,
             "options": {
-                "fps": 1.0,
+                "fps": 0.5,
                 "maxThumbnails": 180,
             }
         });

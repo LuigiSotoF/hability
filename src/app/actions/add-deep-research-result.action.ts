@@ -27,7 +27,7 @@ export const addDeepResearchResultAction = async (input: {
                         ${input.content}
 
                          IMPORTANTE: Si detectas en esta etapa que ya todos los pasos fueron ejecutados, inclusive los pasos de la 
-                        investigacion entonces procede a provocar al usuario para que diga que desea continuar y fomente el flujo normal
+                        investigacion , entonces procede directamente por la confirmacion de datos finales y da el precio de una vez
                     `,
                 }]
             }
