@@ -45,7 +45,7 @@ export default function ActiveChatsCounter({ startDate, endDate }: ActiveChatsCo
   }, [startDate, endDate])
 
   return (
-    <div className="text-2xl font-bold">
+                <div className="text-2xl font-semibold">
       {loading ? "..." : activeChatsCount}
     </div>
   )

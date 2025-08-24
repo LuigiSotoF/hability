@@ -64,7 +64,7 @@ export default function AccountSettings() {
       {/* Header */}
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900 flex items-center gap-3'>
+          <h1 className='text-3xl font-semibold text-gray-900 flex items-center gap-3'>
             <Settings className="w-8 h-8 text-blue-600" />
             Configuración de Cuenta
           </h1>

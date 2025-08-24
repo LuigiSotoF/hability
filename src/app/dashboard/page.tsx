@@ -62,7 +62,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-gray-900">Dashboard</h1>
         <div>
           <DateFilterSelector onFilterChange={handleFilterChange} />
         </div>
@@ -74,7 +74,7 @@ export default function Dashboard() {
             <CardTitle className="text-sm font-medium">Verificaciones Totales</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold">
               {loading ? "..." : activeChats}
             </div>
             <p className="text-xs text-muted-foreground flex items-center">
@@ -83,14 +83,13 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Chats</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold">
               {loading ? "..." : totalChats}
             </div>
             <p className="text-xs text-muted-foreground flex items-center">
@@ -106,7 +105,7 @@ export default function Dashboard() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold">
               {loading ? "..." : completedChats}
             </div>
             <p className="text-xs text-muted-foreground flex items-center">
@@ -122,7 +121,7 @@ export default function Dashboard() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold">
               {loading ? "..." : totalChats > 0 ? `${((completedChats / totalChats) * 100).toFixed(1)}%` : "0%"}
             </div>
             <p className="text-xs text-muted-foreground flex items-center">
