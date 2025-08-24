@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏠 Hability - Plataforma de Evaluación y Compra de Inmuebles
 
-## Getting Started
+Hability es una plataforma inteligente que automatiza la evaluación y compra de inmuebles en Colombia a través de WhatsApp, utilizando IA para analizar videos, documentos y datos de propiedades.
 
-First, run the development server:
+## 🚀 Características
 
+- **Chatbot de WhatsApp** para interacción con usuarios
+- **Análisis de videos** de propiedades usando IA
+- **Investigación profunda** de zonas y mercados inmobiliarios
+- **Evaluación automática** de propiedades
+- **Dashboard administrativo** para gestión de datos
+- **Integración con Supabase** para base de datos
+- **API de OpenAI** para procesamiento de lenguaje natural
+
+## 📋 Prerrequisitos
+
+- Node.js 18+ 
+- npm, yarn, pnpm o bun
+- Cuenta de Supabase
+- API Key de OpenAI
+- Acceso a servicios de WhatsApp Business API
+
+## 🛠️ Instalación
+
+1. **Clona el repositorio**
+```bash
+git clone <tu-repositorio>
+cd hability
+```
+
+2. **Instala las dependencias**
+```bash
+npm install
+# o
+yarn install
+# o
+pnpm install
+# o
+bun install
+```
+
+3. **Configura las variables de entorno**
+
+Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# OpenAI Configuration
+OPENAI_API_KEY=
+```
+
+**⚠️ Importante**: Estas variables son obligatorias para el funcionamiento del proyecto.
+
+## 🔧 Configuración de Variables de Entorno
+
+### Supabase
+1. Ve a [supabase.com](https://supabase.com) y crea un nuevo proyecto
+2. En Settings > API, copia:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
+
+### OpenAI
+1. Ve a [platform.openai.com](https://platform.openai.com)
+2. Crea una nueva API key
+3. Copia la key → `OPENAI_API_KEY`
+
+### Variables Requeridas
+
+El proyecto requiere **3 variables de entorno obligatorias**:
+
+1. **NEXT_PUBLIC_SUPABASE_URL** - URL de tu proyecto Supabase
+2. **SUPABASE_SERVICE_ROLE_KEY** - Clave de servicio de Supabase  
+3. **OPENAI_API_KEY** - Clave de API de OpenAI
+
+Sin estas variables configuradas, el proyecto no funcionará correctamente.
+
+## 🗄️ Configuración de Base de Datos
+
+El proyecto utiliza Supabase. Asegúrate de tener las siguientes tablas configuradas:
+
+- `users` - Información de usuarios
+- `chats` - Historial de conversaciones
+- `houses` - Datos de propiedades
+- `offerts` - Ofertas realizadas
+
+## 🚀 Ejecución
+
+### Desarrollo
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
+# o
 pnpm dev
-# or
+# o
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Producción
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📱 Webhooks
 
-## Learn More
+El sistema utiliza webhooks para procesar:
 
-To learn more about Next.js, take a look at the following resources:
+- **Mensajes de WhatsApp**: `/api/webhook/messages-upsert`
+- **Resultados de análisis de video**: `/api/webhook/video-upload-result`
+- **Resultados de investigación profunda**: `/api/webhook/deep-research-result`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🏗️ Estructura del Proyecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── actions/           # Server Actions
+│   ├── api/              # API Routes
+│   └── dashboard/        # Dashboard pages
+├── components/           # React Components
+├── lib/                 # Utilities & Services
+│   ├── interceptors/    # HTTP Interceptors
+│   ├── providers/       # Service Providers
+│   ├── services/        # Business Logic
+│   └── types/          # TypeScript Types
+```
 
-## Deploy on Vercel
+## 🔒 Seguridad
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Las variables de entorno sensibles están en `.gitignore`
+- Usa `SUPABASE_SERVICE_ROLE_KEY` solo en el servidor
+- Valida todas las entradas de webhook
+- Implementa rate limiting en producción
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🆘 Soporte
+
+Si tienes problemas con la configuración:
+
+1. Verifica que todas las variables de entorno estén configuradas
+2. Asegúrate de que los servicios externos estén funcionando
+3. Revisa los logs del servidor para errores específicos
+4. Consulta la documentación de las APIs externas
+
+## 🔄 Actualizaciones
+
+Para mantener el proyecto actualizado:
+
+```bash
+npm update
+# o
+yarn upgrade
+```
+
+---
+
+**Nota**: Este proyecto está en desarrollo activo. Algunas características pueden cambiar sin previo aviso.
