@@ -87,7 +87,7 @@ export const processMessageAction = async (input: MessageProviderWebhookPayload)
     }
 
     console.log({
-        assistantResponse,
+        assistantResponse: JSON.stringify(assistantResponse, null, 2),
     });
 
 

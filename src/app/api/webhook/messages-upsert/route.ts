@@ -6,12 +6,18 @@ export async function POST(req: NextRequest) {
     try {
         const payload = await req.json() as MessageProviderWebhookPayload;
 
+        console.log("Entry to webhook");
+
         if (
             (payload as any).data.message.senderKeyDistributionMessage
         ) {
             console.log("otros grupos recibidos y anulados");
 
-            return;
+            return NextResponse.json({ status: 'ok' });;
+        }
+
+        if (!payload.data.key.remoteJid.includes('3012414878')) {
+            return NextResponse.json({ status: 'ok' });
         }
         // Aquí puedes procesar el payload recibido
         console.log({
