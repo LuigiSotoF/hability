@@ -41,3 +41,12 @@ export interface MessageProviderWebhookPayload {
         message: TextMessage | ImageMessage | DocumentMessage | AudioMessage | VideoMessage;
     }
 }
+
+export interface DeepResearchProviderWebhookPayload {
+    success: boolean;
+    content: string;
+}
+
+export interface VideoProviderWebhookPayload {
+    openai_file_ids: string[];
+}

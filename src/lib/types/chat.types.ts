@@ -1,7 +1,7 @@
 import { House } from "./house.types";
 import { Offert } from "./offert.types";
 
-export type CHAT_STATUS = "INITIAL" | "USER_RECOGNITION" | "HOUSE_RECOGNITION" | "HOUSE_VIDEO_READING" | "HOUSE_VERIFICATION_VALUES" | "CALCULING_PRICE" | "OFFERT";
+export type CHAT_STATUS = "INITIAL" | "USER_RECOGNITION" | "HOUSE_RECOGNITION" | "HOUSE_VIDEO_READING" | "HOUSE_VERIFICATION_VALUES" | "CALCULING_PRICE" | "OFFERT" | 'FINAL';
 export interface Chat {
     id: string;
     user_id: string;
@@ -19,5 +19,5 @@ export interface Messages {
     created_at: Date;
     side: MESSAGE_SIDE;
     action?: string;
-    content: string;    
+    content: string;
 }

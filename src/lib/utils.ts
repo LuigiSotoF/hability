@@ -91,3 +91,32 @@ export const getMimetypeByExtension = (filename: string): string => {
       return 'application/octet-stream'; // fallback genérico
   }
 };
+
+export const getDeepResearchPrompt = (
+  address: string,
+  city: string,
+  strate: string,
+) => {
+  return `
+  A partir de los siguientes datos: 
+
+    - Estrato: ${strate}
+    - Ciudad: ${city}
+    - Direccion: ${address}
+  
+    Crea una busqueda completa que contenga de forma obligatoria resultados de busqueda sobre:
+
+    1. Precios promedio de viviendas que se ofrecen cerca de esa direccion
+    2. El precio promedio del mt2 en ese sector teniendo en cuenta el estrato
+    3. Si existen proyectos en curso o por ser iniciados/terminados que pudieras vallorizar la propiedad a largo plazo
+    4. Si es un sector con alta peligrosidad y dicha inseguridad ha aumentado con el tiempo
+    5. Si se han reportado estados sismicos o eventos sismicos recientemente en ese sector
+    6. Evalua en base al plan de ordenamiento territorial de la ciudad posibles criterios de apreciacion de inmuebles en el sector
+    7. Evalua la humedad de ese barrio o sector especifico
+    
+
+    Al final del flujo debes reesponder cada pregunta con la informacion que tengas, sin embargo, es importante que 
+    toda la informacion expuesta sea lo suficientemente nutrida como para que un analista pueda deidir si vale la pena o no comprar la casa
+
+  `;
+}
