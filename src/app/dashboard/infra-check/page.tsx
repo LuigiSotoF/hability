@@ -1,4 +1,4 @@
-import { HouseDataDisplay } from "@/components/house-data-display";
+import { InfraCheckTable } from "@/components/infra-check-table";
 
 export default function InfraCheckPage() {
   return (
@@ -9,8 +9,8 @@ export default function InfraCheckPage() {
           Revisa el estado y análisis de las propiedades registradas en el sistema.
         </p>
       </div>
-      
-      <HouseDataDisplay />
+
+      <InfraCheckTable />
     </div>
   );
 }

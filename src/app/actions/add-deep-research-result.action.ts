@@ -1,11 +1,11 @@
 import { MAIN_ASSISTANT_PROMPT } from "@/lib/constants";
 import { createServerDBProvider } from "@/lib/providers/db.provider";
 import { getIAProvider } from "@/lib/providers/ia.provider";
+import { sendMessageAction } from "./send-message-action";
 
 export const addDeepResearchResultAction = async (input: {
     conversationId: string;
     content: string;
-    houseId: string;
 }): Promise<void> => {
     const provider = await createServerDBProvider();
     const iaProvider = getIAProvider();
@@ -21,13 +21,15 @@ export const addDeepResearchResultAction = async (input: {
                 content: [{
                     type: 'input_text',
                     text: `
-                        Te envio el "CONSOLIDADO DE INFORMACION DE RIESGO", responde de acuerdo a los criterios definidos anteriormente 
+                        Te envio el "INFORME DE BUSQUEDA PROFUNDA", responde de acuerdo a los criterios definidos anteriormente 
 
-                        "CONSOLIDADO DE INFORMACION DE RIESGO"
+                        ## INFORME DE BUSQUEDA PROFUNDA
                         ${input.content}
-
-                         IMPORTANTE: Si detectas en esta etapa que ya todos los pasos fueron ejecutados, inclusive los pasos de la 
-                        investigacion , entonces procede directamente por la confirmacion de datos finales y da el precio de una vez
+                    `,
+                }, {
+                    type: 'input_text',
+                    text: `
+                        Procede a calcular la oferta para el usuario segun los criterios de tu prompt.
                     `,
                 }]
             }
@@ -35,23 +37,17 @@ export const addDeepResearchResultAction = async (input: {
     });
 
     const data = JSON.parse(responsesResult.output_text);
+    const chat = await provider.from('chats').select('*').eq('conversation_id', input.conversationId).single();
+    const user = await provider.from('users').select('*').eq('id', chat.data.user_id).single();
 
-    console.log("DeepResearchFinalData =>", data);
+    await provider.from('messages').insert({
+        side: 'ASSISTANT',
+        content: String(data['message'] || 'Tuvimos un problema, intenta nuevamente'),
+        chat_id: chat.data.id,
+    });
 
-
-    await provider.from('house').update({
-        humidity_score: parseInt(data.data.humidityScore) ?? 0,
-        security_score: parseInt(data.data.securityScore) ?? 0,
-        security_justification: data.data.securityJustification ?? '',
-
-        investment_score: parseInt(data.data.investmentScore) ?? 0,
-        investment_score_justification: data.data.investmentScoreJustification ?? '',
-
-        around_price_estimated: parseInt(data.data.aroundPriceEstimated) ?? 0,
-        around_price_estimated_justification: data.data.aroundPriceEstimatedJustification ?? '',
-
-        mts_estimated: parseInt(data.data.mtsEstimated) ?? 0,
-        mts_estimated_justification: data.data.mtsEstimatedJustification ?? ''
-    }).eq('id', input.houseId).single();
-
+    sendMessageAction({
+        to: user.data.phoneNumber,
+        message: String(data['message'] || 'Tuvimos un problema, intenta nuevamente'),
+    });
 };

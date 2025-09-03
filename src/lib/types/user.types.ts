@@ -3,7 +3,6 @@ import { Chat } from "./chat.types";
 export interface User {
     id: string;
     created_at: Date;
-    full_name: string;
-    phone: string;
-    chats: Chat[];
+    fullName: string;
+    phoneNumber: string;
 }

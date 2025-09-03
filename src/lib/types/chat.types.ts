@@ -1,22 +1,18 @@
-import { House } from "./house.types";
-import { Offert } from "./offert.types";
 
-export type CHAT_STATUS = "INITIAL" | "USER_RECOGNITION" | "HOUSE_RECOGNITION" | "HOUSE_VIDEO_READING" | "HOUSE_VERIFICATION_VALUES" | "CALCULING_PRICE" | "OFFERT" | 'FINAL';
+export type CHAT_STATUS = 'CREATING_RESPONSE' | 'REGISTER_USER_DATA' | 'CHECK_HOUSE_PROPERTIES' | 'REGISTER_HOUSE_DETAILS' | 'REGISTER_PRE_OFFERT' | 'REGISTER_ACCEPTED_OFFERT';
 export interface Chat {
     id: string;
     user_id: string;
-    created_at: Date;
+    created_at: string; // ISO string para compatibilidad con Client Components
     status: CHAT_STATUS;
     messages: Messages[];
-    house?: House;
-    offert?: Offert;
 }
 
 export type MESSAGE_SIDE = "USER" | "ASSISTANT";
 export interface Messages {
     id: string;
     chat_id: string;
-    created_at: Date;
+    created_at: string; // ISO string
     side: MESSAGE_SIDE;
     action?: string;
     content: string;

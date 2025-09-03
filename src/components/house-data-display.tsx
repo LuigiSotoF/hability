@@ -74,52 +74,42 @@ export function HouseDataDisplay({ className }: HouseDataDisplayProps) {
                       <h3 className="font-medium text-gray-900">{house.address}</h3>
                       <p className="text-sm text-gray-500">{house.city}</p>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <span className="text-gray-600">Precio:</span>
-                        <div className="font-medium">{formatPrice(house.around_price_estimated)}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Área:</span>
-                        <div className="font-medium">{house.mts_estimated} m²</div>
+                        <span className="text-gray-600">Área declarada:</span>
+                        <div className="font-medium">{house.mts} m²</div>
                       </div>
                       <div>
                         <span className="text-gray-600">Habitaciones:</span>
-                        <div className="font-medium">{house.bethrooms}</div>
+                        <div className="font-medium">{house.rooms}</div>
                       </div>
                       <div>
                         <span className="text-gray-600">Estrato:</span>
-                        <div className="font-medium">{house.stratum}</div>
+                        <div className="font-medium">{house.strate}</div>
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Seguridad</span>
-                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.security_score)}`}>
-                          {house.security_score}/10
+                        <span className="text-sm text-gray-600">Techo</span>
+                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.ceilingScore)}`}>
+                          {house.ceilingScore}/10
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Inversión</span>
-                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.investment_score)}`}>
-                          {house.investment_score}/10
+                        <span className="text-sm text-gray-600">Piso</span>
+                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.floorScore)}`}>
+                          {house.floorScore}/10
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Infraestructura</span>
-                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.infracstrucute_score)}`}>
-                          {house.infracstrucute_score}/10
+                        <span className="text-sm text-gray-600">Acabados</span>
+                        <div className={`px-2 py-1 rounded-md text-sm font-medium ${getScoreColor(house.finishedScore)}`}>
+                          {house.finishedScore}/10
                         </div>
                       </div>
                     </div>
-
-                    {house.recent_seismic_events && (
-                      <div className="text-sm text-[#D01A1A] bg-[#D01A1A]/17 px-2 py-1 rounded-md">
-                        ⚠️ Eventos sísmicos recientes
-                      </div>
-                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -130,3 +120,4 @@ export function HouseDataDisplay({ className }: HouseDataDisplayProps) {
     </div>
   );
 }
+

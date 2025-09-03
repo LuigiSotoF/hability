@@ -26,8 +26,10 @@ import {
 } from "@/components/ui/table"
 import { getHousesAction } from "@/app/actions/get-houses.action"
 import { getChatsAction } from "@/app/actions/get-chat.action"
+import { getOffertsAction } from "@/app/actions/get-offerts.action"
 import { House } from "@/lib/types/house.types"
 import { Chat, CHAT_STATUS } from "@/lib/types/chat.types"
+import { Offert } from "@/lib/types/offert.types"
 
 // Tipo combinado para la tabla
 export type HouseTableData = {
@@ -58,20 +60,16 @@ export const columns: ColumnDef<HouseTableData>[] = [
       const status = row.getValue("status") as string
       const getStatusDisplay = (status: string) => {
         switch (status) {
-          case "INITIAL":
-            return "Inicial"
-          case "USER_RECOGNITION":
-            return "Reconocimiento Usuario"
-          case "HOUSE_RECOGNITION":
-            return "Reconocimiento Casa"
-          case "HOUSE_VIDEO_READING":
-            return "Lectura Video"
-          case "HOUSE_VERIFICATION_VALUES":
-            return "Verificación Valores"
-          case "CALCULING_PRICE":
-            return "Calculando Precio"
-          case "OFFERT":
-            return "Oferta"
+          case "REGISTER_USER_DATA":
+            return "Registro usuario"
+          case "CHECK_HOUSE_PROPERTIES":
+            return "Verif. propiedad"
+          case "REGISTER_HOUSE_DETAILS":
+            return "Detalles propiedad"
+          case "REGISTER_PRE_OFFERT":
+            return "Pre-oferta"
+          case "REGISTER_ACCEPTED_OFFERT":
+            return "Oferta aceptada"
           default:
             return status
         }
@@ -148,33 +146,46 @@ export function RegisterDataTable({ startDate, endDate }: RegisterDataTableProps
         const chatsResponse = await getChatsAction({ page: 1, limit: 100 })
         const chats = chatsResponse.isOk ? chatsResponse.data : []
 
-        // Crear un mapa de chats por chat_id para acceso rápido
+        // Obtener ofertas
+        const offertsResponse = await getOffertsAction({ page: 1, limit: 100 })
+        const offerts = offertsResponse.isOk ? offertsResponse.data : []
+
+        // Crear mapas por id
         const chatMap = new Map<string, Chat>()
         chats.forEach((chat: Chat) => {
           chatMap.set(chat.id, chat)
         })
 
-        // Combinar datos de houses con chats
+        const offertsByChatId = new Map<string, Offert[]>()
+        offerts.forEach((off: Offert) => {
+          const arr = offertsByChatId.get(off.chat_id) ?? []
+          arr.push(off)
+          offertsByChatId.set(off.chat_id, arr)
+        })
+
+        // Combinar datos de houses con chats y ofertas
         let tableData: HouseTableData[] = houses.map((house: House) => {
           const chat = chatMap.get(house.chat_id)
+          const chatOfferts = offertsByChatId.get(house.chat_id) ?? []
+          const hasAccepted = chatOfferts.some(o => o.accepted)
+          const hasAnyOffert = chatOfferts.length > 0
 
-          // Calcular general score basado en los scores de la house
-          const generalScore = Math.round(
-            (house.security_score +
-              house.investment_score +
-              house.infracstrucute_score +
-              house.humidity_score +
-              house.facade_score +
-              house.plugs_score) / 6
-          )
+          const resolvedStatus: CHAT_STATUS = hasAccepted
+            ? "REGISTER_ACCEPTED_OFFERT"
+            : hasAnyOffert
+              ? "REGISTER_PRE_OFFERT"
+              : (chat?.status ?? "REGISTER_USER_DATA")
+
+          // Calcular un infra check simple promediando scores disponibles
+          const infraAvg = Math.round((house.ceilingScore + house.floorScore + house.finishedScore) / 3)
 
           return {
             id: house.id,
             address: house.address,
-            status: chat?.status || "INITIAL",
-            infra_check: house.infracstrucute_score.toString(),
+            status: resolvedStatus,
+            infra_check: String(infraAvg),
             date: chat?.created_at ? new Date(chat.created_at).toLocaleDateString('es-ES') : "N/A",
-            general_score: generalScore,
+            general_score: infraAvg, // temporal, el usuario definirá luego
             created_at: chat?.created_at ? new Date(chat.created_at) : null
           }
         })

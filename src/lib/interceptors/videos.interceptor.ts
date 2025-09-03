@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Crear instancia axios
 const videosInterceptor = axios.create({
-    baseURL: "https://ctls.onrender.com",
+    baseURL: "https://ctls-l1er.onrender.com/",
     headers: {
         "Content-Type": "application/json",
     },

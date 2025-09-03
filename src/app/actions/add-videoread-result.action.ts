@@ -1,18 +1,39 @@
-import { MAIN_ASSISTANT_PROMPT } from "@/lib/constants";
+import { MAIN_ASSISTANT_PROMPT, MAIN_ASSISTANT_PROMPT_VIDEO_READ } from "@/lib/constants";
 import { createServerDBProvider } from "@/lib/providers/db.provider";
 import { getIAProvider } from "@/lib/providers/ia.provider";
 import { sendMessageAction } from "./send-message-action";
+import { createLogger } from "@/lib/logger";
 
 export const addVideoReadResultAction = async (input: {
     conversationId: string;
     fileIds: string[];
-    houseId: string;
 }): Promise<void> => {
+    const logger = createLogger({ flow: 'action:addVideoReadResult', correlationId: input.conversationId });
     const provider = await createServerDBProvider();
     const iaProvider = getIAProvider();
 
+    logger.step('vision_response_start', { files: input.fileIds?.length || 0 });
     const responsesResult = await iaProvider.responses.create({
         model: "gpt-5",
+        instructions: MAIN_ASSISTANT_PROMPT_VIDEO_READ,
+        input: [
+            {
+                role: 'user',
+                content: input.fileIds.map(element => {
+                    return {
+                        type: 'input_image',
+                        file_id: element,
+                        detail: 'high',
+                    }
+                })
+            },
+        ],
+    });
+    logger.ok('vision_response_ok', 'Respuesta vision recibida');
+
+
+    const assistantResponse = await iaProvider.responses.create({
+        model: "gpt-5-mini",
         conversation: input.conversationId,
         store: true,
         instructions: MAIN_ASSISTANT_PROMPT,
@@ -22,65 +43,35 @@ export const addVideoReadResultAction = async (input: {
                 content: [
                     {
                         type: 'input_text',
-                        text: `
-                        Se envian las imagenes correspondientes al video del usuario para mostrar su casa, evalua las imagenes y responde segun los criterios.
-                    `,
+                        text: `El proceso de validacion de video ha sido terminado y las caracteristicas del inmueble detectadas han sido agregadas en este chat en un mensaje del rol system.`,
                     },
-                ]
-            },
-            {
-                role: 'user',
-                content: input.fileIds.map(element => {
-                    return {
-                        type: 'input_image',
-                        file_id: element,
-                        detail: 'low',
-                    }
-                })
-            },
-            {
-                role: 'system',
-                content: [
                     {
                         type: 'input_text',
-                        text: `
-                            De a cuerdo al system prompt corrobora los datos con el usuario (HOUSE_VERIFICATION_VALUES)
-
-                            Si detectas en esta etapa que ya todos los pasos fueron ejecutados, inclusive los pasos de la 
-                            investigacion entonces procede directamente con la oferta (OFFERT) , responde en tu mensaje con esta sin pausas
-                        `,
+                        text: responsesResult.output_text,
                     },
+                    {
+                        type: 'input_text',
+                        text: `Procede a validar la informacion del inmueble y responder con el action correspondiente.`,
+                    }
                 ]
-            },
-        ],
+            }
+        ]
     });
 
-    const chat = await provider.from('chats').select('*').eq('house_id', input.houseId).single();
+    const chat = await provider.from('chats').select('*').eq('conversation_id', input.conversationId).single();
     const user = await provider.from('users').select('*').eq('id', chat.data.user_id).single();
-    const data = JSON.parse(responsesResult.output_text);
+    logger.ok('assistant_response_ok', 'Assistant respondio tras vision');
+    const data = JSON.parse(assistantResponse.output_text);
 
-    console.log("add-video-parts =>", data);
-
-
-    const houseDetails = data.data.houseDetails;
-
-    const houseUpdateresult = await provider.from('house').update({
-        "ceiling_score": parseInt(houseDetails.ceilingScore) ?? 0,
-        "floor_score": parseInt(houseDetails.floorScore) ?? 0,
-        "finishes_score": parseInt(houseDetails.finishedScore),
-        "bethrooms": Array.from(houseDetails.bethrooms).length,
-        "other_spaces": houseDetails.otherSpaces,
-        "facade_score": parseInt(houseDetails.facadeScore),
-        "plugs_score": parseInt(houseDetails.plugsScore),
-        "special_structures": houseDetails.specialStructures,
-        "mts": parseInt(houseDetails.estimatedAreaM2) ?? 0,
-    }).eq('id', chat.data.house_id)
-        .single();
-
-    console.log('houseUpdateresult =>', houseUpdateresult.error);
+    await provider.from('messages').insert({
+        side: 'ASSISTANT',
+        content: String(data['message'] || 'Tuvimos un problema, intenta nuevamente'),
+        chat_id: chat.data.id,
+    });
 
     sendMessageAction({
-        to: user.data.phone,
+        to: user.data.phone || user.data.phoneNumber,
         message: String(data['message'] || 'NO_VALUE'),
     });
+    logger.ok('message_sent', 'Mensaje enviado al usuario');
 };

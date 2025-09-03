@@ -1,17 +1,20 @@
 import deepResearch from "../interceptors/deep-research.interceptor";
-import { GetChatsOutput } from "../types/cases/get-chats"
+import { createLogger } from "../logger";
 
 export const useDeepResearchService = () => {
 
     const makeDeepResearch = (input: {
         prompt: string;
         conversationId: string;
-        houseId: string;
-    }): Promise<GetChatsOutput> => {
-        return deepResearch.post('/deep-research/enqueue', {
+    }): Promise<any> => {
+        const logger = createLogger({ flow: 'service:deepResearch', correlationId: input.conversationId });
+        logger.step('enqueue_start');
+        const res = deepResearch.post('/deep-research/enqueue', {
             prompt: input.prompt,
-            callbackUrl: process.env.APP_URL + '/api/webhook/deep-research-result' + '?conversationId=' + input.conversationId + '&houseId=' + input.houseId,
+            callbackUrl: process.env.APP_URL + '/api/webhook/deep-research-result' + '?conversationId=' + input.conversationId,
         });
+        logger.ok('enqueue_ok');
+        return res;
     }
 
     return {

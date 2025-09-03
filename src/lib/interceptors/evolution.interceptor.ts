@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Crear instancia axios
 const evolutionInterceptor = axios.create({
-    baseURL: "http://45.55.162.127:8080",
+    baseURL: "http://45.55.162.127:8080/",
     headers: {
         "apikey": "086222D76C5E-46B1-8254-7974FE706EDD",
         "Content-Type": "application/json",

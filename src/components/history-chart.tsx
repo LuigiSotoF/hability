@@ -6,7 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type EChartsOption = echarts.EChartsOption;
 
-export const HistoryChart = () => {
+type HistoryChartProps = {
+  labels?: string[]
+  values?: number[]
+}
+
+export const HistoryChart = ({ labels = [], values = [] }: HistoryChartProps) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
@@ -25,10 +30,6 @@ export const HistoryChart = () => {
           tooltip: {
             trigger: 'axis'
           },
-          // legend: {
-          //   data: ['Actividad 2023', 'Actividad 2024'],
-          //   top: 30
-          // },
           grid: {
             left: '3%',
             right: '4%',
@@ -38,7 +39,7 @@ export const HistoryChart = () => {
           xAxis: [
             {
               type: 'category',
-              data: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+              data: labels.length ? labels : ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
             }
           ],
           yAxis: [
@@ -48,11 +49,9 @@ export const HistoryChart = () => {
           ],
           series: [
             {
-              name: 'Actividad 2023',
+              name: 'Chats',
               type: 'bar',
-              data: [
-                2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
-              ],
+              data: values.length ? values : [2, 5, 7, 10, 12, 8, 6, 9, 4, 3, 5, 2],
               itemStyle: {
                 color: '#1482F8'
               },
@@ -60,25 +59,6 @@ export const HistoryChart = () => {
                 data: [
                   { type: 'max', name: 'Máximo' },
                   { type: 'min', name: 'Mínimo' }
-                ]
-              },
-              markLine: {
-                data: [{ type: 'average', name: 'Promedio' }]
-              }
-            },
-            {
-              name: 'Actividad 2024',
-              type: 'bar',
-              data: [
-                2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
-              ],
-              itemStyle: {
-                color: '#DFE1E7' // Verde
-              },
-              markPoint: {
-                data: [
-                  { name: 'Máximo', value: 182.2, xAxis: 7, yAxis: 183 },
-                  { name: 'Mínimo', value: 2.3, xAxis: 11, yAxis: 3 }
                 ]
               },
               markLine: {
@@ -99,7 +79,7 @@ export const HistoryChart = () => {
         chartInstance.current = null;
       }
     };
-  }, []);
+  }, [labels, values]);
 
   useEffect(() => {
     const handleResize = () => {
