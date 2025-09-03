@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60; // segundos
+export const maxDuration = 120; // segundos
 import { MessageProviderWebhookPayload } from '@/lib/types/webhook.types';
 import { processMessageAction } from '@/app/actions/process-message.action';
 import { createLogger } from '@/lib/logger';

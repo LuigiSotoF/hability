@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60; // segundos
+export const maxDuration = 120; // segundos
 import { VideoProviderWebhookPayload } from '@/lib/types/webhook.types';
 import { addVideoReadResultAction } from '@/app/actions/add-videoread-result.action';
 import { createLogger } from '@/lib/logger';

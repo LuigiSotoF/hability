@@ -1,5 +1,4 @@
 'use server';
-export const maxDuration = 60; // Vercel Server Actions timeout
 
 import { MessageProviderWebhookPayload, TextMessage } from "@/lib/types/webhook.types";
 import { createServerDBProvider } from "@/lib/providers/db.provider";
